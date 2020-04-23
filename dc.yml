@@ -1,0 +1,87 @@
+version: "3"
+
+services:
+
+  # wsgi
+  backend_still:
+    build: .
+    command: /bin/bash ./commands/wsgi/${SERVER}.sh
+    container_name: backend_still
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./:/srv/project
+    depends_on:
+      - rabbitmq_still
+      - postgres_still
+      - memcached_still
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+
+  celery_still:
+    build: .
+    command: /bin/bash ./commands/start_celery.sh
+    container_name: celery_still
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq_still
+      - postgres_still
+    volumes:
+      - ./:/srv/project
+
+  celerybeat_still:
+    build: .
+    command: celery -A still_petrovsk beat -l info --workdir=/srv/project/src
+    container_name: celerybeat_still
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq_still
+      - postgres_still
+    volumes:
+      - ./:/srv/project
+
+  rabbitmq_still:
+    image: rabbitmq:3.8-rc-management-alpine
+    container_name: rabbitmq_still
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "15672:15672"
+
+  memcached_still:
+    image: memcached:latest
+    container_name: memcached_still
+    restart: always
+
+  postgres_still:
+    image: postgres:11.3
+    container_name: postgres_still
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  nginx_still:
+    image: nginx:1.17.4-alpine
+    container_name: nginx_still
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/
+      - ./static_content:/etc/nginx/static_content/
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend_still
+
+volumes:
+  pgdata: {}
