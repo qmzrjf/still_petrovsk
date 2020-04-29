@@ -4,6 +4,7 @@
 
 {%block content%}
 {% load crispy_forms_tags %}
+<div class="col-md-8">
 <form method="post">
    <h2 class="text-center">Login</h2>
     <div>
@@ -19,5 +20,8 @@
     {%csrf_token%}
       <button type="submit"  class="btn btn-light col-sm-6 col-md-5 col-lg-4 mt-5 mx-auto d-block">Login</button>
 
+         <a href="{% url 'password_reset' %}">Forgot password?</a>
+
 </form>
+</div>
 {% endblock content%}

@@ -1,6 +1,8 @@
 from django.forms import ModelForm
-from blog.models import User
+from blog.models import User, Post
 from django import forms
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse, Http404
 
 
 class SignUpForm(ModelForm):
@@ -28,3 +30,35 @@ class SignUpForm(ModelForm):
         activation_code = user.activation_codes.create()
         activation_code.send_activation_code()
         return user
+
+
+class RepeatEmailForm(ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = User
+        fields = ('email',)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        user = get_object_or_404(User, email=cleaned_data['email'])
+        act = user.activation_codes.all().last()
+
+        if act.is_activated:
+            raise Http404
+        else:
+            act.send_activation_code()
+        return cleaned_data
+
+
+class AdminPostForm(ModelForm):
+    class Meta:
+        model = Post
+        fields = ('title', 'text', 'author', 'picture')
+
+
+class PostForm(ModelForm):
+    class Meta:
+        Model = Post
+        fields = ('title', 'text', 'author', 'picture')
+

@@ -12,6 +12,13 @@ def avatar_path(instace, filename: str):
     return '/'.join(['avatar', str(instace.id), filename])
 
 
+def picture_path(instace, filename: str):
+    ext = filename.split('.')[-1]
+    f = str(uuid4())
+    filename = f'{f}.{ext}'
+    return '/'.join(['post_picture', 'tmp', filename])
+
+
 class User(AbstractUser):
     avatar = models.ImageField(upload_to=avatar_path, null=True, blank=True, default=None)
 
@@ -30,3 +37,14 @@ class ActivationCode(models.Model):
 
     def send_activation_code(self):
         send_activation_code_async.delay(self.user.email, self.code)
+
+
+class Post(models.Model):
+    picture = models.ImageField(upload_to=picture_path, null=True, blank=True, default=None)
+    title = models.CharField(max_length=120)
+    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authors')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.title}, {self.author}, {self.created}'

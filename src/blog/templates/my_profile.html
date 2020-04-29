@@ -1,0 +1,33 @@
+{%extends 'base.html'%}
+
+{%block title%}My profile{% endblock title%}
+{% load crispy_forms_tags %}
+{%block content%}
+<div class="col-md-8">
+<form method = "post" enctype="multipart/form-data">
+   <h2 class="text-center">My Profile</h2>
+     <div>
+
+      <div class="col-6 p-0 mx-auto col-sm-6 col-md-5 col-lg-4">
+        {{ form.email|as_crispy_field }}
+      </div>
+         <div class="col-6 p-0 mx-auto col-sm-6 col-md-5 col-lg-4">
+        {{ form.first_name|as_crispy_field }}
+      </div>
+         <div class="col-6 p-0 mx-auto col-sm-6 col-md-5 col-lg-4">
+        {{ form.last_name|as_crispy_field }}
+      </div>
+         <div class="col-6 p-0 mx-auto col-sm-6 col-md-5 col-lg-4">
+        {{ form.avatar|as_crispy_field }}
+      </div>
+                  <div class="col-6 p-0 mx-auto col-sm-6 col-md-5 col-lg-4">
+        <a href="{% url 'password_change' %}">Change password</a>
+      </div>
+
+
+</div>
+    {%csrf_token%}
+      <button type="submit"  class="btn btn-light col-sm-6 col-md-5 col-lg-4 mt-5 mx-auto d-block">Upgrade</button>
+</form>
+</div>
+{% endblock content%}

@@ -1,0 +1,25 @@
+{%extends 'base.html'%}
+
+{%block title%}Repeat Email{% endblock title%}
+
+{%block content%}
+
+{% load crispy_forms_tags %}
+
+<div class="col-md-8">
+<form method = "post">
+
+        <h2 class="text-center">Repeat Email</h2>
+     <div>
+
+      <div class="col-6 p-0 mx-auto col-sm-6 col-md-5 col-lg-4">
+        {{ form.email|as_crispy_field }}
+      </div>
+
+
+</div>
+    {%csrf_token%}
+      <button type="submit"  class="btn btn-light col-sm-6 col-md-5 col-lg-4 mt-5 mx-auto d-block">Send again</button>
+</form>
+</div>
+{% endblock content%}

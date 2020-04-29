@@ -18,11 +18,12 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.contrib.auth.urls import *
 
 urlpatterns = [
-    path('95ccb44a-b9cc-4a65-b856-a3f6a719b53c/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('activation_code_sent', TemplateView.as_view(template_name='activation.html'), name='activation_code_sent'),
     # path('q', TemplateView.as_view(template_name='base_post.html'), name='q'),
     path('auth/', include('django.contrib.auth.urls')),
     path('blog/', include('blog.urls'))

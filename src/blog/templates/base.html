@@ -31,7 +31,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="{% url 'index' %}">Home
+            <a class="nav-link" href="#">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
@@ -44,7 +44,10 @@
           <li class="nav-item">
             <a class="nav-link" href="#">Contact</a>
           </li>
-          {% if user.is_authenticated %}
+                    {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' request.user.id %}">Profille</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
           </li>
@@ -56,7 +59,6 @@
             <a class="nav-link" href="{% url 'login' %}">Login</a>
           </li>
           {% endif %}
-
         </ul>
       </div>
     </div>
@@ -67,14 +69,8 @@
 
     <div class="row">
 
-      <!-- Post Content Column -->
-      <div class="col-lg-8">
-
-        {%block content%}{% endblock content%}
-
-      </div>
-
-      <!-- Sidebar Widgets Column -->
+    {%block content%}{% endblock content%}
+          <!-- Sidebar Widgets Column -->
       <div class="col-md-4">
 
         <!-- Search Widget -->
@@ -134,6 +130,8 @@
         </div>
 
       </div>
+      </div>
+
 
     </div>
     <!-- /.row -->

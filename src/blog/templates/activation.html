@@ -1,0 +1,25 @@
+{%extends 'base.html'%}
+
+{%block title%}SignUp{% endblock title%}
+
+{%block content%}
+
+{% load crispy_forms_tags %}
+<div class="col-md-8">
+
+<form>
+
+        <h2 class="text-center">Письмо отправлено</h2>
+     <div>
+
+      <div class="col-6 p-0 mx-auto col-sm-6 col-md-5 col-lg-4">
+        <p>Письмо с подтверждением регистрации отправлено на почту, указанную при регитсрации.
+            Если письмо не пришло, заполните <a href="{% url 'repeat_email' %}">форму</a>, для повторной отправки.</p>
+      </div>
+
+
+</div>
+    {%csrf_token%}
+</form>
+</div>
+{% endblock content%}
