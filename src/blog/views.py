@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView, View, FormView, DetailView, ListView
 
-from blog.models import User, ActivationCode, Post
+from blog.models import User, ActivationCode, Post, Category
 from blog.forms import SignUpForm, RepeatEmailForm, PostForm
 
 
@@ -23,7 +23,6 @@ class IndexView(ListView):
 class SignUpView(CreateView):
     template_name = 'signup.html'
     queryset = User.objects.all()
-    # fields = ('email', 'first_name', 'last_name', 'avatar',)
     success_url = reverse_lazy('activation_code_sent')
     form_class = SignUpForm
 
@@ -80,3 +79,14 @@ class AuthorSearchView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(author=self.kwargs['pk'])
+
+
+class CategorySearchView(ListView):
+    context_object_name = 'posts'
+    template_name = 'category_search.html'
+    paginate_by = 5
+    model = Post
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(category=self.kwargs['pk'])

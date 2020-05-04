@@ -17,11 +17,11 @@
           <div class="card-body">
             <h2 class="card-title">{{post.title}}</h2>
             <p class="card-text">{{post.text|truncatechars:399}}</p>
-            <a href="{% url 'post_view' post.id %}" class="btn btn-primary">Read More &rarr;</a>
+            <a href="{% url 'post_view' post.id %}" class="btn btn-primary">Читать дальше &rarr;</a>
           </div>
           <div class="card-footer text-muted">
             {{post.created}} by
-            <a href="#">{{post.author}}</a>
+            <a href="{% url 'author_search' post.author.id %}">{{post.author}}</a>
           </div>
         </div>
 
