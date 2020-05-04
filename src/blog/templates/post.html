@@ -1,4 +1,4 @@
-{%extends 'base_post.html'%}
+{%extends 'index.html'%}
  {%block content%}
       <!-- Post Content Column -->
       <div class="col-lg-8">
@@ -20,12 +20,12 @@
         <hr>
 
         <!-- Preview Image -->
-        <img class="img-fluid rounded" src="{{request.user.avatar.url}}" alt="">
+        <img class="img-fluid rounded" src="{{post.picture.url}}" alt="">
 
         <hr>
 
         <!-- Post Content -->
-        {{post.text}}
+        {{post.text|escape|linebreaks}}
         <hr>
 
         <!-- Comments Form -->

@@ -5,7 +5,7 @@ from blog.forms import AdminPostForm
 
 
 class UserAdmin(admin.ModelAdmin):
-    fields = ['email', 'username', 'is_active', 'avatar']
+    fields = ['email', 'username', 'is_active', 'avatar', 'author_status']
 
 
 class PostAdmin(admin.ModelAdmin):

@@ -21,6 +21,7 @@ def picture_path(instace, filename: str):
 
 class User(AbstractUser):
     avatar = models.ImageField(upload_to=avatar_path, null=True, blank=True, default=None)
+    author_status = models.BooleanField(default=False)
 
 
 class ActivationCode(models.Model):

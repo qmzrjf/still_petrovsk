@@ -19,10 +19,11 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.urls import *
+from blog.views import IndexView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('activation_code_sent', TemplateView.as_view(template_name='activation.html'), name='activation_code_sent'),
     # path('q', TemplateView.as_view(template_name='base_post.html'), name='q'),
     path('auth/', include('django.contrib.auth.urls')),

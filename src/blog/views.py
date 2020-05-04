@@ -1,10 +1,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import UpdateView, CreateView, View, FormView, DetailView
+from django.views.generic import UpdateView, CreateView, View, FormView, DetailView, ListView
 
 from blog.models import User, ActivationCode, Post
 from blog.forms import SignUpForm, RepeatEmailForm, PostForm
+
+
+class IndexView(ListView):
+    queryset = Post.objects.all().select_related('author').order_by('-created')
+    context_object_name = 'posts'
+    template_name = 'index.html'
+    paginate_by = 5
+    model = Post
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(IndexView, self).get_context_data(**kwargs)
+    #     context['authors_name'] = User.objects.filter(author_status=True)
+    #     return context
 
 
 class SignUpView(CreateView):
@@ -56,3 +69,14 @@ class PostView(DetailView):
     template_name = 'post.html'
     context_object_name = 'post'
     queryset = Post.objects.all().select_related('author')
+
+
+class AuthorSearchView(ListView):
+    context_object_name = 'posts'
+    template_name = 'author_search.html'
+    paginate_by = 5
+    model = Post
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(author=self.kwargs['pk'])
