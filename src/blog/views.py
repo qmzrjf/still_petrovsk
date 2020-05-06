@@ -1,10 +1,11 @@
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView, View, FormView, DetailView, ListView
 
 from blog.models import User, ActivationCode, Post, Category
-from blog.forms import SignUpForm, RepeatEmailForm, PostForm
+from blog.forms import SignUpForm, RepeatEmailForm, CreatePostForm
 
 
 class IndexView(ListView):
@@ -13,11 +14,6 @@ class IndexView(ListView):
     template_name = 'index.html'
     paginate_by = 5
     model = Post
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(IndexView, self).get_context_data(**kwargs)
-    #     context['authors_name'] = User.objects.filter(author_status=True)
-    #     return context
 
 
 class SignUpView(CreateView):
@@ -69,6 +65,11 @@ class PostView(DetailView):
     context_object_name = 'post'
     queryset = Post.objects.all().select_related('author')
 
+    # def get_context_data(self, **kwargs):
+    #     context = super(PostView, self).get_context_data(**kwargs)
+    #     context['authors_name'] = User.objects.filter(author_status=True)
+    #     return context
+
 
 class AuthorSearchView(ListView):
     context_object_name = 'posts'
@@ -90,3 +91,31 @@ class CategorySearchView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(category=self.kwargs['pk'])
+
+
+class CreatePostView(UserPassesTestMixin, CreateView):
+    template_name = 'create_post.html'
+    queryset = User.objects.all()
+    model = User
+    success_url = reverse_lazy('index')
+    form_class = CreatePostForm
+
+    def test_func(self):
+        return self.request.user.author_status
+
+    def get_form_kwargs(self):
+        kwargs = super(CreatePostView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
+class PostChangeView(UserPassesTestMixin, UpdateView):
+    template_name = 'post_change.html'
+    queryset = Post.objects.all()
+    fields = ('title', 'text', 'category')
+    success_url = reverse_lazy('index')
+
+    def test_func(self):
+        post = Post.objects.get(id=self.kwargs['pk'])
+        author_id = post.author.id
+        return self.request.user.id == author_id

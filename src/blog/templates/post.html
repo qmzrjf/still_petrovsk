@@ -12,7 +12,11 @@
           by
           <a href="{% url 'author_search' post.author.id %}">{{post.author}}</a>
         </p>
-
+        {% if request.user.id == post.author.id%}
+        <p class="lead">
+          <a href="{% url 'post_change' post.id %}">Отредактировать</a>
+        </p>
+        {% endif %}
                 <p class="lead">
           <a href="{% url 'category_search' post.category.id %}">{{post.category}}</a>
         </p>
