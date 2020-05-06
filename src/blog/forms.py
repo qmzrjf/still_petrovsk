@@ -6,7 +6,6 @@ from django.http import HttpResponse, Http404
 
 
 class SignUpForm(ModelForm):
-
     password = forms.CharField(widget=forms.PasswordInput())
     password2 = forms.CharField(widget=forms.PasswordInput())
 
@@ -62,3 +61,13 @@ class PostForm(ModelForm):
         Model = Post
         fields = ('title', 'text', 'author', 'picture')
 
+
+class CreatePostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ('title', 'text', 'author', 'category', 'picture')
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(CreatePostForm, self).__init__(*args, **kwargs)
+        self.fields['author'].queryset = User.objects.filter(author_status=True)
