@@ -119,3 +119,19 @@ class PostChangeView(UserPassesTestMixin, UpdateView):
         post = Post.objects.get(id=self.kwargs['pk'])
         author_id = post.author.id
         return self.request.user.id == author_id
+
+
+class NameSearchView (ListView):
+    context_object_name = 'posts'
+    template_name = 'name_search.html'
+    paginate_by = 5
+    model = Post
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get('search', '')
+        result_search = queryset.filter(title__icontains=search_query)
+        if result_search:
+            return result_search
+        else:
+            raise Http404
