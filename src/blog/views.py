@@ -79,7 +79,7 @@ class AuthorSearchView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(author=self.kwargs['pk'])
+        return queryset.filter(author=self.kwargs['pk']).select_related('author')
 
 
 class CategorySearchView(ListView):
@@ -90,7 +90,7 @@ class CategorySearchView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(category=self.kwargs['pk'])
+        return queryset.filter(category=self.kwargs['pk']).select_related('author')
 
 
 class CreatePostView(UserPassesTestMixin, CreateView):
@@ -130,7 +130,7 @@ class NameSearchView (ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('search', '')
-        result_search = queryset.filter(title__icontains=search_query)
+        result_search = queryset.filter(title__icontains=search_query).select_related('author')
         if result_search:
             return result_search
         else:
