@@ -20,6 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.urls import *
 from blog.views import IndexView
+import blog
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +31,11 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
     path('blog/', include('blog.urls'))
 
+
 ]
+handler403 = 'blog.views.handler403'
+handler404 = 'blog.views.handler404'
+handler500 = 'blog.views.handler500'
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

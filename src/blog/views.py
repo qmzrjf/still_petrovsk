@@ -8,6 +8,18 @@ from blog.models import User, ActivationCode, Post, Category
 from blog.forms import SignUpForm, RepeatEmailForm, CreatePostForm
 
 
+def handler404(request, exception):
+    return render(request, '404.html', status=404)
+
+
+def handler403(request, exception):
+    return render(request, '403.html', status=403)
+
+
+def handler500(request):
+    return render(request, '500.html', status=500)
+
+
 class IndexView(ListView):
     queryset = Post.objects.all().select_related('author').order_by('-created')
     context_object_name = 'posts'
