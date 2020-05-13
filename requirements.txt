@@ -25,6 +25,7 @@ ptyprocess==0.6.0
 pycodestyle==2.5.0
 pyflakes==2.1.1
 Pygments==2.6.1
+pytils==0.3
 pytz==2019.3
 six==1.14.0
 sqlparse==0.3.1

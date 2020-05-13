@@ -18,7 +18,7 @@
         </p>
         {% endif %}
                 <p class="lead">
-          <a href="{% url 'category_search' post.category.id %}">{{post.category}}</a>
+          <a href="{% url 'category_search' post.category.slug %}">{{post.category}}</a>
         </p>
 
         <hr>
@@ -36,6 +36,12 @@
         <!-- Post Content -->
         {{post.text|escape|linebreaks}}
         <hr>
+
+
+         {% for tag in post.tags.all %}
+<a href="{% url 'tag_list' tag.slug %}">{{tag.title}}</a>
+        <p></p>
+{% endfor %}
 
         <!-- Comments Form -->
         <div class="card my-4">

@@ -4,7 +4,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView, View, FormView, DetailView, ListView
 
-from blog.models import User, ActivationCode, Post, Category
+from blog.models import User, ActivationCode, Post, Category, Tag
 from blog.forms import SignUpForm, RepeatEmailForm, CreatePostForm
 
 
@@ -21,7 +21,7 @@ def handler500(request):
 
 
 class IndexView(ListView):
-    queryset = Post.objects.all().select_related('author').order_by('-created')
+    queryset = Post.objects.all().select_related('author', 'category').order_by('-created')
     context_object_name = 'posts'
     template_name = 'index.html'
     paginate_by = 5
@@ -75,7 +75,7 @@ class MyProfile(UpdateView):
 class PostView(DetailView):
     template_name = 'post.html'
     context_object_name = 'post'
-    queryset = Post.objects.all().select_related('author')
+    queryset = Post.objects.all().select_related('author', 'category')
 
     # def get_context_data(self, **kwargs):
     #     context = super(PostView, self).get_context_data(**kwargs)
@@ -91,7 +91,7 @@ class AuthorSearchView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(author=self.kwargs['pk']).select_related('author')
+        return queryset.filter(author=self.kwargs['pk']).select_related('author', 'category')
 
 
 class CategorySearchView(ListView):
@@ -102,7 +102,8 @@ class CategorySearchView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(category=self.kwargs['pk']).select_related('author')
+        category = Category.objects.get(slug=self.kwargs['slug'])
+        return queryset.filter(category=category.id).select_related('author', 'category')
 
 
 class CreatePostView(UserPassesTestMixin, CreateView):
@@ -125,7 +126,7 @@ class PostChangeView(UserPassesTestMixin, UpdateView):
     template_name = 'post_change.html'
     queryset = Post.objects.all()
     fields = ('title', 'text', 'category')
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('index', 'category', 'tags')
 
     def test_func(self):
         post = Post.objects.get(id=self.kwargs['pk'])
@@ -142,8 +143,20 @@ class NameSearchView (ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('search', '')
-        result_search = queryset.filter(title__icontains=search_query).select_related('author')
+        result_search = queryset.filter(title__icontains=search_query).select_related('author', 'category')
         if result_search:
             return result_search
         else:
             raise Http404
+
+
+class TagListViews(ListView):
+    context_object_name = 'posts'
+    template_name = 'tag_list.html'
+    paginate_by = 5
+    model = Post
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tag = Tag.objects.get(slug=self.kwargs['slug'])
+        return queryset.filter(tags=tag.id).select_related('author', 'category')

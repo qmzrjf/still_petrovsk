@@ -27,9 +27,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
     path('activation_code_sent', TemplateView.as_view(template_name='activation.html'), name='activation_code_sent'),
-    # path('q', TemplateView.as_view(template_name='base_post.html'), name='q'),
     path('auth/', include('django.contrib.auth.urls')),
-    path('blog/', include('blog.urls'))
+    path('blog/', include('blog.urls')),
+    path('about/', TemplateView.as_view(template_name='about.html'), name='about')
 
 
 ]
