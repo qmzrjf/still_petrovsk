@@ -4,9 +4,14 @@
 
 {%block content%}
       <!-- Blog Entries Column -->
-
       <div class="col-md-8">
-        <h1 class="my-4">Cтатьи автора "автор нейм" </h1>
+
+          {% for x in posts|slice:":1" %}
+
+        <h1 class="my-4">Cтатьи автора {{x.author}}</h1>
+
+          {% endfor %}
+          <hr>
 
           {% for post in posts %}
 

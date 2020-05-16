@@ -34,12 +34,13 @@
         <hr>
 
         <!-- Post Content -->
+
         {{post.text|escape|linebreaks}}
         <hr>
 
 
          {% for tag in post.tags.all %}
-<a href="{% url 'tag_list' tag.slug %}">{{tag.title}}</a>
+<a href="{% url 'tag_search' tag.slug %}">{{tag.title}}</a>
         <p></p>
 {% endfor %}
 

@@ -6,7 +6,12 @@
       <!-- Blog Entries Column -->
 
       <div class="col-md-8">
-        <h1 class="my-4">Cтатьи по категории "категория нейм"</h1>
+          {% for x in posts|slice:":1" %}
+
+        <h1 class="my-4">Cтатьи в категории {{x.category}}</h1>
+
+          {% endfor %}
+          <hr>
           {% for post in posts %}
 
             <!-- Blog Post -->

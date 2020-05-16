@@ -77,11 +77,6 @@ class PostView(DetailView):
     context_object_name = 'post'
     queryset = Post.objects.all().select_related('author', 'category')
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(PostView, self).get_context_data(**kwargs)
-    #     context['authors_name'] = User.objects.filter(author_status=True)
-    #     return context
-
 
 class AuthorSearchView(ListView):
     context_object_name = 'posts'
@@ -126,7 +121,7 @@ class PostChangeView(UserPassesTestMixin, UpdateView):
     template_name = 'post_change.html'
     queryset = Post.objects.all()
     fields = ('title', 'text', 'category')
-    success_url = reverse_lazy('index', 'category', 'tags')
+    success_url = reverse_lazy('index')
 
     def test_func(self):
         post = Post.objects.get(id=self.kwargs['pk'])
@@ -160,3 +155,8 @@ class TagListViews(ListView):
         queryset = super().get_queryset()
         tag = Tag.objects.get(slug=self.kwargs['slug'])
         return queryset.filter(tags=tag.id).select_related('author', 'category')
+
+    def get_context_data(self, **kwargs):
+        context = super(TagListViews, self).get_context_data(**kwargs)
+        context['current_tag'] = Tag.objects.get(slug=self.kwargs['slug'])
+        return context
