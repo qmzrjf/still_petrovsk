@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from blog.models import User, Post, Category, Tag
+from blog.models import User, Post, Category, Tag, Comment
 from blog.forms import AdminPostForm
 
 
@@ -30,7 +30,12 @@ class TagAdmin(admin.ModelAdmin):
     fields = ['title']
 
 
+class CommentAdmin(admin.ModelAdmin):
+    fields = ['post', 'author', 'text', 'uuid_value']
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Tag, TagAdmin)
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(Category, CategoryAdmin)

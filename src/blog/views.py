@@ -1,11 +1,12 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import Http404
 from django.urls import reverse_lazy
-from django.views.generic import UpdateView, CreateView, View, FormView, DetailView, ListView
+from django.contrib.auth.decorators import login_required
+from django.views.generic import UpdateView, CreateView, View, FormView, DetailView, ListView, DeleteView
 
-from blog.models import User, ActivationCode, Post, Category, Tag
-from blog.forms import SignUpForm, RepeatEmailForm, CreatePostForm
+from blog.models import User, ActivationCode, Post, Category, Tag, Comment
+from blog.forms import SignUpForm, RepeatEmailForm, CreatePostForm, RequestCommentForm
 
 
 def handler404(request, exception):
@@ -76,6 +77,12 @@ class PostView(DetailView):
     template_name = 'post.html'
     context_object_name = 'post'
     queryset = Post.objects.all().select_related('author', 'category')
+
+    def get_context_data(self, **kwargs):
+        context = super(PostView, self).get_context_data(**kwargs)
+        post = Post.objects.get(slug=self.kwargs['slug'])
+        context['comments'] = Comment.objects.filter(post=post.id)
+        return context
 
 
 class AuthorSearchView(ListView):
@@ -160,3 +167,36 @@ class TagListViews(ListView):
         context = super(TagListViews, self).get_context_data(**kwargs)
         context['current_tag'] = Tag.objects.get(slug=self.kwargs['slug'])
         return context
+
+
+@login_required(login_url='login')
+def comment_create_view(request, slug):
+
+    post = get_object_or_404(Post, slug=slug)
+    author = User.objects.get(id=request.user.id)
+
+    if request.method == 'POST':
+        comment_form = RequestCommentForm(request.POST)
+
+        if comment_form.is_valid():
+            print('asdasd'*100)
+            text = comment_form.cleaned_data['text']
+            Comment.objects.create(post=post, author=author, text=text)
+    else:
+        comment_form = RequestCommentForm()
+
+    return redirect('post_view', slug=slug)
+
+
+class CommentDeleteView(UserPassesTestMixin, DeleteView):
+
+    '''Костыль'''
+
+    success_url = reverse_lazy('index')
+    model = Comment
+
+
+    def test_func(self):
+        comment = Comment.objects.get(uuid_value=self.kwargs['pk'])
+        author_id = comment.author.id
+        return self.request.user.id == author_id

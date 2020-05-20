@@ -1,8 +1,11 @@
 from django.forms import ModelForm
-from blog.models import User, Post
+from blog.models import User, Post, Comment
 from django import forms
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, Http404
+from django.http import Http404
+
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 
 class SignUpForm(ModelForm):
@@ -71,3 +74,11 @@ class CreatePostForm(forms.ModelForm):
         user = kwargs.pop('user')
         super(CreatePostForm, self).__init__(*args, **kwargs)
         self.fields['author'].queryset = User.objects.filter(author_status=True)
+
+
+class RequestCommentForm(ModelForm):
+    text = forms.CharField(required=True, max_length=500)
+
+    class Meta:
+        model = Comment
+        fields = ['text']

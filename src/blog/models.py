@@ -81,3 +81,10 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+
+class Comment(models.Model):
+    uuid_value = models.UUIDField(primary_key=True, default=uuid4, editable=False, unique=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comment_post')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authors_comm')
+    text = models.CharField(max_length=500)
